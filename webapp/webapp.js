@@ -1,23 +1,33 @@
+GameStats = new Mongo.Collection('gamestats');
+
+if (Meteor.isServer) {
+  Meteor.startup(function () {
+    rules = ['chooseTop', 'waitUntilDealerCardsGone', 'waitUntilPlayerMoreCommon']
+    GameStats.remove({});
+    for (var i = rules.length - 1; i >= 0; i--) {
+      GameStats.insert({
+        rule: rules[i],
+        default_loss: 0,
+        card_win: 0,
+        card_loss: 0
+      });
+    }
+  });
+}
+
+
 if (Meteor.isClient) {
   // counter starts at 0
-  Session.setDefault('counter', 0);
-
   Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
+
   });
 
   Template.hello.events({
     'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+      console.log(Meteor.playGame.runIterations(10000, "waitUntilPlayerMoreCommon", true));
+
     }
   });
 }
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
-}
+
