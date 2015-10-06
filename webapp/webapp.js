@@ -18,14 +18,15 @@ if (Meteor.isServer) {
 
 if (Meteor.isClient) {
   // counter starts at 0
-  Template.hello.helpers({
-
+  Template.body.helpers({
+    
   });
 
-  Template.hello.events({
+  Template.naive.events({
     'click button': function () {
+      var strategy = $(this);
       console.log(Meteor.playGame.runIterations(10000, "waitUntilPlayerMoreCommon", true));
-
+      // console.log($(this).html());
     }
   });
 }
