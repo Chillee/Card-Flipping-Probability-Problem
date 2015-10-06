@@ -5,14 +5,29 @@
 <body>
   <h1>Welcome to Meteor!</h1>
 
-  {{> naive}}
-  {{> naive}}
+  {{#each userResults}}
 
+      {{> strategy this}}
+
+  {{/each}}
 </body>
 
-<template name="naive">
-  <div class="result">
-  <button>Click Me</button>
+<template name="strategy">
+  <div id={{this._id}} class="result" >
+    {{#with this}}
+      <div>{{this.rule}}</div>
+      default win: {{this.default_win}} regular win: {{this.card_win}}
+      <br>
+      default loss: {{this.default_loss}} regular loss: {{this.card_loss}}
+      <br>
+
+      <button class="playOne">Play The Game Once</button>
+      <button class="playTen">Play The Game 10 Times </button>
+      <button class="playHundred">Play The Game 100 times </button>
+      <button class="playTenThousand">Play the game 10000 times</button>
+      <div id=this.rule></div>
+     {{> highchartsHelper chartId=this.rule chartWidth="100%" chartHeight="100%"
+                         chartObject=generateChart}}
+    {{/with}}
   </div>
 </template>
-

@@ -1,6 +1,6 @@
 var PLAYER_CARD = 1
 var DEALER_CARD = 0
-var NUMBER_OF_CARDS = 6
+var NUMBER_OF_CARDS = 52
 var NUMBER_OF_DEALER = NUMBER_OF_CARDS/2;
 var NUMBER_OF_PLAYER = NUMBER_OF_CARDS/2;
 Meteor.playGame = {
@@ -18,7 +18,7 @@ Meteor.playGame = {
   },
 
   waitUntilPlayerMoreCommon: function(player_cards_flipped, dealer_cards_flipped){
-    if(dealer_cards_flipped > player_cards_flipped){
+    if(dealer_cards_flipped > player_cards_flipped+1){
       return true;
     } else{
       return false;
@@ -64,7 +64,11 @@ Meteor.playGame = {
       console.assert(player_cards_flipped + dealer_cards_flipped == flipped_cards.length);
     }
    console.assert(remaining_deck.length === 0 && flipped_cards.length === NUMBER_OF_CARDS)
-   return ["dealer win by default", flipped_cards, remaining_deck]
+   if(flipped_cards[NUMBER_OF_CARDS-1]==PLAYER_CARD){
+     return ["player win by default", flipped_cards, remaining_deck];
+   } else if(flipped_cards[NUMBER_OF_CARDS-1]==DEALER_CARD){
+     return ["dealer win by default", flipped_cards, remaining_deck];
+   }
   },
 
   generateShuffledDeck: function(){
@@ -94,6 +98,8 @@ Meteor.playGame = {
   runIterations: function(num_iters, choosing_rule, detailed_results){
     player_win = 0;
     dealer_win = 0;
+    dealer_win_default=0;
+    player_win_default=0;
     full_results = [];
     for(var i=0; i<num_iters; i++){
       original_deck = this.generateShuffledDeck();
@@ -107,14 +113,19 @@ Meteor.playGame = {
       } else if(result==="top card is dealer"){
         dealer_win++;
       } else if(result === "dealer win by default"){
-        dealer_win++;
+        dealer_win_default++;
+      } else if(result == "player win by default"){
+        player_win_default++;
       }
       if(detailed_results){
         full_results.push([flipped_cards, remaining_deck]);
       }
       //console.log(flipped_cards, remaining_deck);
     }
-    return [player_win / (player_win+dealer_win+0.0), full_results];
+    return [(player_win +player_win_default)/
+           (player_win_default+dealer_win_default + player_win+dealer_win+0.0),
+           [player_win, dealer_win, dealer_win_default, player_win_default],
+            full_results];
   }
 
 }
