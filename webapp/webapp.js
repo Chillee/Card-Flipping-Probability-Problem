@@ -99,7 +99,7 @@ if (Meteor.isClient) {
               text: "Results"
           },
           tooltip: {
-              pointFormat: '<b>{point.percentage:.1f}%</b>'
+              pointFormat: '<b>{point.y:.0f}</b>'
           },
           plotOptions: {
               pie: {
